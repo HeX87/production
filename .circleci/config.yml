@@ -32,11 +32,7 @@ jobs:
       - run: php .gitlab-ci/tools/vendor/bin/ecs check --config easy-coding-standard.php
       - run: php .gitlab-ci/tools/vendor/bin/phpstan analyse
       - run: php .gitlab-ci/tools/vendor/bin/psalm
-      - run: curl -L https://cs.symfony.com/download/php-cs-fixer-v3.phar -o php-cs-fixer
-      - run: chmod a+x php-cs-fixer
-      - run: ./php-cs-fixer --diff --dry-run -v --allow-risky=yes fix
-      - run: php -d memory_limit=-1 vendor/bin/phpstan analyse src --level max
-      - run: php -d memory_limit=-1 vendor/bin/simple-phpunit
+
 
 workflows:
   version: 2
