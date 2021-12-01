@@ -25,12 +25,6 @@ jobs:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-      - restore_cache: # special step to restore the dependency cache if `package.json` does not change
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - node-v1-
-      - run: cp .env .env.local
       - run: ./bin/ci bundle:dump
       - run: apt update && apt install shellcheck
       - run: shellcheck --exclude=SC1090 --exclude=SC2039 bin/*.sh .gitlab-ci/*.sh .gitlab-ci/tools/bin/*.sh .gitlab-ci/e2e/*.sh
