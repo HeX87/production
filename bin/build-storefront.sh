@@ -2,6 +2,8 @@
 
 CWD="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
+set -e
+
 export PROJECT_ROOT="${PROJECT_ROOT:-"$(dirname "$CWD")"}"
 STOREFRONT_ROOT="${STOREFRONT_ROOT:-"${PROJECT_ROOT}/vendor/shopware/storefront"}"
 
@@ -14,6 +16,7 @@ fi
 
 # build storefront
 [[ ${SHOPWARE_SKIP_BUNDLE_DUMP} ]] || "${BIN_TOOL}" bundle:dump
+DATABASE_URL="" "${BIN_TOOL}" feature:dump
 
 if [[ $(command -v jq) ]]; then
     OLDPWD=$(pwd)
@@ -29,7 +32,11 @@ if [[ $(command -v jq) ]]; then
         if [[ -f "$path/package.json" && ! -f "$path/node_modules" && $name != "storefront" ]]; then
             echo "=> Installing npm dependencies for ${name}"
 
-            npm install --prefix "$path"
+            if [[ -f "$path/package-lock.json" ]]; then
+                npm clean-install --prefix "$path"
+            else
+                npm install --prefix "$path"
+            fi
         fi
     done
     cd "$OLDPWD" || exit
